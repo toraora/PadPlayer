@@ -11,5 +11,6 @@ namespace PadLogic.Game
         public int NumOrbs { get; set; }
         public int NumEnahcements { get; set; }
         public bool IsRow { get; set; }
+        public bool IsTpa { get { return NumOrbs == 4; } }
     }
 }

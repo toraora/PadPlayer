@@ -14,7 +14,9 @@
   },
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": {
+      "frameworkAssemblies": {"System.Runtime":  "4.0.10.0"}
+    }
   },
 
   "publishExclude": [

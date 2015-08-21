@@ -28,9 +28,29 @@ namespace PadLogic.Game
 
         public static int[][] MoveDirections = { new int[] { 1, 0 }, new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 0, -1 } };
 
-        public List<Combo> GetCombos()
+        public Tuple<Board, Board, List<Combo>> GetBoardsAfterPath(int y, int x, List<int[]> path)
+        {
+            Board b = new Board(this);
+            foreach (var direction in path)
+            {
+                var newY = y + direction[0];
+                var newX = x + direction[1];
+                Orb temp = b.Orbs[newY, newX];
+                b.Orbs[newY, newX] = b.Orbs[y, x];
+                b.Orbs[y, x] = temp;
+                y = newY;
+                x = newX;
+            }
+            Board clear = new Board(b);
+            var combos = clear.GetCombos(false);
+            return new Tuple<Board, Board, List<Combo>>(b, clear, combos);
+        }
+
+        public List<Combo> GetCombos(bool copy = true)
         {
             Board copyBoard = new Board(this);
+            if (!copy)
+                copyBoard = this;
             List<Combo> combos = new List<Combo>();
             List<Combo> lastComboSet = new List<Combo>();
             do
@@ -41,7 +61,9 @@ namespace PadLogic.Game
             } while (lastComboSet.Any());
             return combos;
         }
+
         private static int[][] MatchDirections = { new int[] { 1, 0 }, new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 0, -1 } };
+                                                   
         // this function changes the board! make a copy before calling it
         private List<Combo> GetCombosWithoutGravity()
         {
@@ -102,7 +124,7 @@ namespace PadLogic.Game
                         comboNumOrbs++;
                         if (Enhancements[curLoc.Item1, curLoc.Item2])
                             comboNumEnhances++;
-                        isRow = isRow ? true : isRows[curLoc.Item1];
+                        isRow = isRow ? isRows[curLoc.Item1] : false;
                         visited.Add(curLoc);
                         foreach (var direction in MatchDirections)
                         {
@@ -134,10 +156,10 @@ namespace PadLogic.Game
             for (int j = 0; j < Width; j++)
             {
                 orbPositions.Clear();
-                for (int i = Height - 1; i >= 0; i--)
+                for (int i = 0; i < Height; i++)
                     if (Orbs[i, j] != Orb.None)
                         orbPositions.Push(new Tuple<int, int>(i, j));
-                for (int i = 0; i < Height; i++)
+                for (int i = Height - 1; i >= 0; i--)
                 {
                     if (orbPositions.Any())
                     {
@@ -148,6 +170,20 @@ namespace PadLogic.Game
                         Orbs[i, j] = Orb.None;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            string ret = "\n";
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    ret += Enum.GetName(typeof(Orb), Orbs[i, j]).Substring(0, 1) + " ";
+                }
+                ret += "\n";
+            }
+            return ret;              
         }
     }
 }
