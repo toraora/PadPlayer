@@ -28,7 +28,16 @@ namespace PadPlayerAPI
                     Array vals = Enum.GetValues(typeof(Orb));
                     for (int i = 0; i < 5; i++)
                         for (int j = 0; j < 6; j++)
-                            b.Orbs[i, j] = (i + j) % 2 == 0 ? Orb.Red : Orb.Blue;
+                        {
+                            b.Orbs[i, j] = (i) % 2 == 0 ? Orb.Red : Orb.Blue;
+                            if (j == 1)
+                            {
+                                if (i % 2 == 0)
+                                    b.Orbs[i, j] = Orb.Blue;
+                                else
+                                    b.Orbs[i, j] = Orb.Red;
+                            }
+                        }
                     var p = DfsSolver.GetBestPath(b);
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(p) + "\n\n\n" + JsonConvert.SerializeObject(b));
                 }

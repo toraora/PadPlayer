@@ -13,8 +13,8 @@ namespace PadLogic.Solver
         {
             public static Options Default = new Options();
 
-            public int MaxDepth = 20;
-            public int NumToKeep = 500;
+            public int MaxDepth = 11;
+            public int NumToKeep = 100;
             public int WhenToPrune = 10000;
         }
         public static Path GetBestPath(Board b)
@@ -55,7 +55,7 @@ namespace PadLogic.Solver
                 if (curPath.Score > bestPath.Score)
                     bestPath = curPath;
                 if (curPath.Depth == o.MaxDepth)
-                    return bestPath;
+                    continue;
                 if (paths.Count() > o.WhenToPrune)
                 {
                     var newPaths = new Stack<Tuple<Board, Path>>();
@@ -67,8 +67,8 @@ namespace PadLogic.Solver
                 foreach (var direction in Board.MoveDirections)
                 {
                     if (curPath.Length != 0 &&
-                        curPath.Actions.Last()[0] == direction[0] &&
-                        curPath.Actions.Last()[1] == direction[1])
+                        curPath.Actions.Last()[0] == -direction[0] &&
+                        curPath.Actions.Last()[1] == -direction[1])
                         continue;
                     var newY = curPath.Current.Item1 + direction[0];
                     var newX = curPath.Current.Item2 + direction[1];
@@ -91,7 +91,7 @@ namespace PadLogic.Solver
                     }));
                 }
             }
-            return null;
+            return bestPath;
         }
     }
 }
