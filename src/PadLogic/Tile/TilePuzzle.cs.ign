@@ -1,0 +1,180 @@
+﻿using PadLogic.Game;
+using PadLogic.Solver;
+using PadLogic.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace PadLogic.Tile
+{
+    public class TilePath
+    {
+        public List<int[]> Actions { get; set; } = new List<int[]>();
+        public Tuple<int, int> Start { get; set; }
+    }
+
+    public class TilePuzzle
+    {
+        private static int OrbDistance(Tuple<int, int> loc1, Tuple<int, int> loc2)
+        {
+            if (Board.MoveDirections.Length == 4)
+                return Math.Abs(loc1.Item1 - loc2.Item1)
+                        + Math.Abs(loc1.Item2 - loc2.Item2);
+            return Math.Abs(loc1.Item1 - loc2.Item1)
+                    + Math.Abs(loc1.Item2 - loc2.Item2)
+                    - Math.Min(
+                        Math.Abs(loc1.Item1 - loc2.Item1),
+                        Math.Abs(loc1.Item2 - loc2.Item2)
+                      );
+        }
+
+        private Board TileBoard;
+        private Board TargetBoard;
+        private int Height { get { return TileBoard.Height; } }
+        private int Width { get { return TileBoard.Width; } }
+        private Tuple<int, int> Cursor;
+
+        private TilePuzzle(Board b, Board target)
+        {
+            TileBoard = new Board(b);
+            TargetBoard = new Board(target);
+            Cursor = new Tuple<int, int>(Height - 1, Width - 1);
+        }
+
+        private TilePath Solve()
+        {
+            if (Height > Width)
+        }
+
+        private List<int[]> PutInPlace(int y, int x, int target_y, int target_x)
+        {
+            List<int[]> moves = new List<int[]>();
+            if (y == Height - 1)
+            {
+                moves.AddRange(MoveCursorToRow(Height - 2));
+                moves.AddRange(MoveCursorToColumn(x));
+                moves.Add(MoveDown());
+            }
+            if (x == Width - 1)
+            {
+                moves.AddRange(MoveCursorToColumn(Width - 2));
+                moves.AddRange(MoveCursorToRow(y));
+                moves.Add(MoveRight());
+            }
+
+        }
+
+        private List<int[]> DoLeft(int y, int x, bool blankOnBottom)
+        {
+            List<int[]> moves = new List<int[]>();
+            if (blankOnBottom)
+            {
+                moves.Add(MoveLeft());
+                moves.Add(MoveUp());
+                moves.Add(MoveRight());
+                moves.Add(MoveDown());
+                moves.Add(MoveLeft());
+            }
+            else
+            {
+                moves.Add(MoveLeft());
+                moves.Add(MoveDown());
+                moves.Add(MoveRight());
+                moves.Add(MoveUp());
+                moves.Add(MoveLeft());
+            }
+            return moves;
+        }
+
+
+        private List<int[]> DoUp(int y, int x, bool blankOnRight)
+        {
+            List<int[]> moves = new List<int[]>();
+            if (blankOnRight)
+            {
+                moves.Add(MoveUp());
+                moves.Add(MoveLeft());
+                moves.Add(MoveDown());
+                moves.Add(MoveRight());
+                moves.Add(MoveUp());
+            }
+            else
+            {
+                moves.Add(MoveUp());
+                moves.Add(MoveRight());
+                moves.Add(MoveDown());
+                moves.Add(MoveLeft());
+                moves.Add(MoveUp());
+            }
+            return moves;
+        }
+
+        // assumes nothing is in the way
+        private List<int[]> MoveCursorToRow(int y)
+        {
+            List<int[]> moves = new List<int[]>();
+            while (Cursor.Item1 != y)
+            {
+                if (Cursor.Item1 > y)
+                    moves.Add(MoveUp());
+                else
+                    moves.Add(MoveDown());
+            }
+            return moves;
+        }
+        // assumes nothing is in the way
+        private List<int[]> MoveCursorToColumn(int x)
+        {
+            List<int[]> moves = new List<int[]>();
+            while (Cursor.Item2 != x)
+            {
+                if (Cursor.Item2 > x)
+                    moves.Add(MoveLeft());
+                else
+                    moves.Add(MoveRight());
+            }
+            return moves;
+        }
+
+        #region Move Cardinal
+        private static Dictionary<string, int[]> MoveDirections = new Dictionary<string, int[]>
+        {
+            { "UP", new int[] { -1, 0 } },
+            { "DOWN", new int[] { 1, 0 } },
+            { "LEFT", new int[] { 0, -1 } },
+            { "RIGHT", new int[] { 0, 1 } }
+        };
+        private int[] MoveUp()
+        {
+            return Move(MoveDirections["UP"]);
+        }
+
+        private int[] MoveDown()
+        {
+            return Move(MoveDirections["DOWN"]);
+        }
+
+        private int[] MoveLeft()
+        {
+            return Move(MoveDirections["LEFT"]);
+        }
+
+        private int[] MoveRight()
+        {
+            return Move(MoveDirections["UP"]);
+        }
+
+        private int[] Move(int[] direction)
+        {
+            var newY = Cursor.Item1 + direction[0];
+            var newX = Cursor.Item2 + direction[1];
+            Orb temp = TileBoard.Orbs[Cursor.Item1, Cursor.Item2];
+            TileBoard.Orbs[Cursor.Item1, Cursor.Item2] = TileBoard.Orbs[newY, newX];
+            TileBoard.Orbs[newY, newX] = temp;
+            Cursor = new Tuple<int, int>(newY, newX);
+            return direction;
+        }
+        #endregion
+    }
+}

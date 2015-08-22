@@ -180,13 +180,17 @@ namespace PadLogic.Game
             return hash;
         }
 
-        public bool EqualsBoard(Board b)
+        public bool EqualsBoard(Board b, bool ignoreNone = false)
         {
             for (int i = 0; i < Height; i++)
                 for (int j = 0; j < Width; j++)
+                {
+                    if (ignoreNone && (Orbs[i, j] == Orb.None || b.Orbs[i, j] == Orb.None))
+                        continue;
                     if (Orbs[i, j] != b.Orbs[i, j]
                         || Enhancements[i, j] != b.Enhancements[i, j])
                         return false;
+                }
             return true;
         }
 
