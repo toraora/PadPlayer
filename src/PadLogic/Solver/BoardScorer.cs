@@ -65,7 +65,7 @@ namespace PadLogic.Solver
         public static double Score(this Board board, Options o)
         {
             List<Combo> combos = board.GetCombos();
-            return combos.Sum(c => c.Score(o)) * o.factor(combos);
+            return combos.Sum(c => c.Score(o)) * o.factor(combos) * (0.75 + 0.25 * combos.Count);
         }
 
         public static double Score(this Combo combo, Options o)

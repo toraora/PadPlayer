@@ -63,7 +63,7 @@ namespace PadLogic.Game
         }
 
         private static int[][] MatchDirections = { new int[] { 1, 0 }, new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 0, -1 } };
-                                                   
+
         // this function changes the board! make a copy before calling it
         private List<Combo> GetCombosWithoutGravity()
         {
@@ -170,6 +170,24 @@ namespace PadLogic.Game
                         Orbs[i, j] = Orb.None;
                 }
             }
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = 31 * hash + Orbs.GetHashCode();
+            hash = 31 * hash + Enhancements.GetHashCode();
+            return hash;
+        }
+
+        public bool EqualsBoard(Board b)
+        {
+            for (int i = 0; i < Height; i++)
+                for (int j = 0; j < Width; j++)
+                    if (Orbs[i, j] != b.Orbs[i, j]
+                        || Enhancements[i, j] != b.Enhancements[i, j])
+                        return false;
+            return true;
         }
 
         public override string ToString()

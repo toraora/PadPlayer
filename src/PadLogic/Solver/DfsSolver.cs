@@ -13,7 +13,7 @@ namespace PadLogic.Solver
         {
             public static Options Default = new Options();
 
-            public int MaxDepth = 14;
+            public int MaxDepth = 7;
             public int NumToKeep = 100;
             public int WhenToPrune = 2500;
         }
@@ -31,8 +31,9 @@ namespace PadLogic.Solver
             Parallel.For(0, b.Height, i =>
             {
                 //for (int i = 0; i < b.Height; i++)
-                for (int j = 0; j < b.Width; j++)
+                Parallel.For(0, b.Width, j =>
                 {
+                    //for (int j = 0; j < b.Width; j++)
                     var curPath = GetBestPathFrom(b, o, i, j);
                     lock (pathLock)
                     {
@@ -41,25 +42,29 @@ namespace PadLogic.Solver
                     }
                     var c = b.GetBoardsAfterPath(curPath.Start.Item1, curPath.Start.Item2, curPath.Actions);
                     var curPath2 = GetBestPathFrom(c.Item1, o, curPath.Current.Item1, curPath.Current.Item2);
-                    curPath.Actions.AddRange(curPath2.Actions);
+                    var actions = new List<int[]>(curPath.Actions);
+                    actions.AddRange(curPath2.Actions);
+                    curPath2.Actions = actions;
                     lock (pathLock)
                     {
                         if (curPath2.Score > bestPath.Score)
-                            bestPath = new Path
+                            curPath = bestPath = new Path
                             {
                                 Start = curPath.Start,
                                 Current = curPath2.Current,
                                 Depth = curPath.Depth + curPath2.Depth,
                                 Score = curPath2.Score,
-                                Actions = curPath.Actions
+                                Actions = curPath2.Actions
                             };
                     }
-                }
+                });
             });
 
             var cc = b.GetBoardsAfterPath(bestPath.Start.Item1, bestPath.Start.Item2, bestPath.Actions);
             var bestPath2 = GetBestPathFrom(cc.Item1, o, bestPath.Current.Item1, bestPath.Current.Item2);
-            bestPath.Actions.AddRange(bestPath2.Actions);
+            var actions2 = new List<int[]>(bestPath.Actions);
+            actions2.AddRange(bestPath2.Actions);
+            bestPath2.Actions = actions2;
             lock (pathLock)
             {
                 if (bestPath2.Score > bestPath.Score)
@@ -69,10 +74,9 @@ namespace PadLogic.Solver
                         Current = bestPath2.Current,
                         Depth = bestPath.Depth + bestPath2.Depth,
                         Score = bestPath2.Score,
-                        Actions = bestPath.Actions
+                        Actions = bestPath2.Actions
                     };
             }
-
             return bestPath;
         }
 

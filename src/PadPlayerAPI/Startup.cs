@@ -33,8 +33,12 @@ namespace PadPlayerAPI
                         }
                     var p = DfsSolver.GetBestPath(b);
                     var b2 = b.GetBoardsAfterPath(p.Start.Item1, p.Start.Item2, p.Actions);
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(p));
-                    return;
+                    Board opt = SAASSolver.GetOptimalBoards(b, SAASSolver.Options.Default, BoardScorer.Options.Horus).First();
+                    var b3 = new Board(opt);
+                    b3.GetCombos(false);
+                    var p2 = SAASSolver.GetBestPath(b, SAASSolver.Options.Default, BoardScorer.Options.Horus);
+                    //await context.Response.WriteAsync(JsonConvert.SerializeObject(p));
+                    //return;
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(p)
                         + "\n\n\n"
                         + JsonConvert.SerializeObject(b)
@@ -45,6 +49,13 @@ namespace PadPlayerAPI
                         + b2.Item2.ToString()
                         + "\n\n"
                         + b2.Item1.Score(BoardScorer.Options.Horus)
+                        + "\n\n"
+                        + opt.ToString()
+                        + b3.ToString()
+                        + "\n\n"
+                        + opt.Score(BoardScorer.Options.Horus)
+                        + "\n\n"
+                        + JsonConvert.SerializeObject(p2)
                     );
                 }
                 catch (Exception ex)

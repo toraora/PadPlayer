@@ -9,9 +9,9 @@ namespace PadLogic.Solver
     {
         public int Length { get { return Actions.Count(); } }
         public List<int[]> Actions { get; set; } = new List<int[]>();
-        public Tuple<int, int> Start;
+        public Tuple<int, int> Start = new Tuple<int, int>(0, 0);
         public double Score;
         public int Depth;
-        public Tuple<int, int> Current;
+        public Tuple<int, int> Current = new Tuple<int, int>(0, 0);
     }
 }

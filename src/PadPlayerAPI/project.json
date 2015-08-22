@@ -3,10 +3,11 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
     "PadLogic": "1.0.0",
-    "Newtonsoft.Json": "7.0.1"
+    "Newtonsoft.Json": "7.0.1",
+    "System.Collections": "4.0.10"
   },
 
   "commands": {
@@ -14,8 +15,11 @@
   },
 
   "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {"System.Runtime":  "4.0.10.0"}
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0",
+        "System.Collections":  "4.0.10.0"
+      }
     }
   },
 
