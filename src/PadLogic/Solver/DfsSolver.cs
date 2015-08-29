@@ -13,7 +13,7 @@ namespace PadLogic.Solver
         {
             public static Options Default = new Options();
 
-            public int MaxDepth = 7;
+            public int MaxDepth = 12;
             public int NumToKeep = 100;
             public int WhenToPrune = 2500;
         }

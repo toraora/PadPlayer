@@ -17,6 +17,10 @@
   },
 
   "frameworks": {
-    "dotnet": { }
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0"
+      }
+    }
   }
 }

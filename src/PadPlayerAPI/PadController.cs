@@ -6,6 +6,8 @@ using Microsoft.AspNet.Mvc;
 using PadLogic.Game;
 using PadLogic.Solver;
 using Newtonsoft.Json;
+using System.Drawing;
+using PadLogic.Image;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +16,26 @@ namespace PadPlayerAPI
     [Route("/")]
     public class PadController : Controller
     {
+        [Route("solve")]
+        public string SolveBoard(string path, int rows, int cols, int width, int height, int w_off, int h_off)
+        {
+            path = Uri.UnescapeDataString(path);
+            Console.WriteLine(path);
+            Bitmap bmp = new Bitmap(path);
+            Board b = PadImage.BoardFromBitmap(rows, cols, height, width, h_off, w_off, bmp);
+            return JsonConvert.SerializeObject(DfsSolver.GetBestPath(b));
+        }
+
+        [Route("solve2")]
+        public string SolveBoard2(string path, int rows, int cols, int width, int height, int w_off, int h_off)
+        {
+            path = Uri.UnescapeDataString(path);
+            Console.WriteLine(path);
+            Bitmap bmp = new Bitmap(path);
+            Board b = PadImage.BoardFromBitmap(rows, cols, height, width, h_off, w_off, bmp);
+            return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b));
+        }
+
         [Route("htest")]
         public string TestHeuristic()
         {
@@ -38,21 +60,17 @@ namespace PadPlayerAPI
         }
 
         [Route("saas")]
-        public string TestSAAS()
+        public string TestSAAS(string path, int rows, int cols, int width, int height, int w_off, int h_off)
         {
-            Board b = new Board(5, 6);
-            Array vals = Enum.GetValues(typeof(Orb));
-            for (int i = 0; i < b.Height; i++)
-                for (int j = 0; j < b.Width; j++)
-                {
-                    b.Orbs[i, j] = (i + j) % 2 == 0 ? Orb.Red : Orb.Blue;
-                    b.Orbs[i, j] = (Orb)vals.GetValue(1 + (i + j) % 5);
-                }
+            path = Uri.UnescapeDataString(path);
+            Console.WriteLine(path);
+            Bitmap bmp = new Bitmap(path);
+            Board b = PadImage.BoardFromBitmap(rows, cols, height, width, h_off, w_off, bmp);
             Board opt = SAASSolver.GetOptimalBoards(b, SAASSolver.Options.Default, BoardScorer.Options.Horus).First();
             var b3 = new Board(opt);
             b3.GetCombos(false);
-            var p2 = SAASSolver.GetBestPathSA(b, SAASSolver.Options.Default, BoardScorer.Options.Horus);
-            var b4 = b.GetBoardsAfterPath(p2.Start.Item1, p2.Start.Item2, p2.Actions);
+            //var p2 = SAASSolver.GetBestPathSA(b, SAASSolver.Options.Default, BoardScorer.Options.Horus);
+            //var b4 = b.GetBoardsAfterPath(p2.Start.Item1, p2.Start.Item2, p2.Actions);
             return ""
                 + b.ToString()
                 + "\n\nSAAS optimal:"
@@ -60,10 +78,10 @@ namespace PadPlayerAPI
                 + b3.ToString()
                 + "\n\n"
                 + opt.Score(BoardScorer.Options.Horus)
-                + "\n\n"
-                + JsonConvert.SerializeObject(p2)
-                + b4.Item1.ToString()
-                + b4.Item2.ToString();
+                + "\n\n";
+              //  + JsonConvert.SerializeObject(p2)
+              //  + b4.Item1.ToString()
+              //  + b4.Item2.ToString();
         }
 
         [Route("boardeq")]

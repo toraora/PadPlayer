@@ -33,5 +33,15 @@ namespace PadLogic.Utilities
             if (item.Value.Count == 1) dict.Remove(item.Key);
             return item.Value.Dequeue();
         }
+
+        public PriorityQueue<TValue, TPriority> TrimToSize(int size)
+        {
+            PriorityQueue<TValue, TPriority> newQ = new PriorityQueue<TValue, TPriority>();
+            for (int i = 0; i < size && this.Count != 0; i++)
+            {
+                newQ.Enqueue(this.Dequeue());
+            }
+            return newQ;
+        }
     }
 }

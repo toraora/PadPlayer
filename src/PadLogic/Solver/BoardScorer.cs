@@ -65,11 +65,13 @@ namespace PadLogic.Solver
         public static double Score(this Board board, Options o)
         {
             List<Combo> combos = board.GetCombos();
-            return combos.Sum(c => c.Score(o)) * o.factor(combos) * (0.75 + 0.25 * combos.Count);
+            return combos.Sum(c => c.Score(o)) * o.factor(combos) * (0.75 + 0.25 * combos.Count) + combos.Count;
         }
 
         public static double Score(this Combo combo, Options o)
         {
+            if (combo.OrbType == Orb.Heal)
+                return 0;
             return 
                 (o.Power[combo.OrbType] + (combo.IsTpa ? o.TpaPower[combo.OrbType] : 0))  // base power
                 * 0.25 * (1 + combo.NumOrbs)                                            // num orbs
