@@ -7,7 +7,7 @@ namespace PadLogic.Game
 {
     public class Board
     {
-        public Orb[,] Orbs { get; private set; }
+        public Orb[,] Orbs { get; set; }
         public bool[,] Enhancements { get; private set; }
 
         public int Height { get { return Orbs.GetLength(0); } }
@@ -95,9 +95,11 @@ namespace PadLogic.Game
                 }
             // row check
             bool[] isRows = new bool[Height];
+            for (int i = 0; i < isRows.Length; i++)
+                isRows[i] = true;
             for (int i = 0; i < Height; i++)
                 for (int j = 1; j < Width; j++)
-                    isRows[i] = Orbs[i, j] == Orbs[i, 0];
+                    isRows[i] = isRows[i] ? Orbs[i, j] == Orbs[i, 0] : false;
 
             Stack<Tuple<int, int>> orbStack = new Stack<Tuple<int, int>>();
             HashSet<Tuple<int, int>> visited = new HashSet<Tuple<int, int>>();
@@ -106,7 +108,7 @@ namespace PadLogic.Game
                 {
                     int comboNumOrbs = 0;
                     int comboNumEnhances = 0;
-                    bool isRow = false;
+                    bool isRow = true;
                     Orb orbType = Orbs[i, j];
 
                     if (comboBoard.Orbs[i, j] == Orb.None)

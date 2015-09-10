@@ -28,7 +28,7 @@ namespace PadLogic.Solver
                 { Orb.Red, 2281 },
                 { Orb.Blue, 900 },
                 { Orb.Green, 200 },
-                { Orb.Light, 875 },
+                { Orb.Light, 2875 },
                 { Orb.Dark, 1250 }
             };
 
@@ -70,8 +70,8 @@ namespace PadLogic.Solver
 
         public static double Score(this Combo combo, Options o)
         {
-            if (combo.OrbType == Orb.Heal)
-                return 0;
+            if (combo.OrbType == Orb.Heal || combo.OrbType == Orb.Jammer)
+                return 200 * combo.NumOrbs;
             return 
                 (o.Power[combo.OrbType] + (combo.IsTpa ? o.TpaPower[combo.OrbType] : 0))  // base power
                 * 0.25 * (1 + combo.NumOrbs)                                            // num orbs

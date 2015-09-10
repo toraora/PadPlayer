@@ -8,6 +8,7 @@ using PadLogic.Solver;
 using Newtonsoft.Json;
 using System.Drawing;
 using PadLogic.Image;
+using PadLogic;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,7 +34,22 @@ namespace PadPlayerAPI
             Console.WriteLine(path);
             Bitmap bmp = new Bitmap(path);
             Board b = PadImage.BoardFromBitmap(rows, cols, height, width, h_off, w_off, bmp);
-            return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b));
+            return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b, BoardScorer.Options.Horus));
+        }
+
+        [Route("solveone ")]
+        public string SolveBoardOne(string path, int rows, int cols, int width, int height, int w_off, int h_off)
+        {
+            Board b = new Board(5, 6);
+            b.Orbs = new Orb[,]
+            {
+                { Orb.Green, Orb.Heal, Orb.Light, Orb.Green, Orb.Green, Orb.Red }, 
+                { Orb.Dark, Orb.Blue, Orb.Red, Orb.Red, Orb.Blue, Orb.Light },
+                { Orb.Heal, Orb.Red, Orb.Heal, Orb.Dark, Orb.Blue, Orb.Blue},
+                { Orb.Green, Orb.Green, Orb.Dark, Orb.Light, Orb.Dark, Orb.Dark},
+                { Orb.Dark, Orb.Green, Orb.Dark, Orb.Light, Orb.Red, Orb.Green}
+            };
+            return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b, BoardScorer.Options.Horus));
         }
 
         [Route("htest")]

@@ -13,16 +13,16 @@ namespace PadLogic.Solver
         {
             public static Options Default = new Options();
 
-            public int MaxDepth = 100;
+            public int MaxDepth = 80;
             public int BeamWidth = 100;
         }
 
-        public static Path GetBestPath(Board b)
+        public static Path GetBestPath(Board b, BoardScorer.Options bso)
         {
-            return GetBestPath(b, Options.Default);
+            return GetBestPath(b, Options.Default, bso);
         }
 
-        public static Path GetBestPath(Board b, Options o)
+        public static Path GetBestPath(Board b, Options o, BoardScorer.Options bso)
         {
             Path bestPath = new Path();
             object pathLock = new object();
@@ -33,7 +33,7 @@ namespace PadLogic.Solver
                 Parallel.For(0, b.Width, j =>
                 {
                     //for (int j = 0; j < b.Width; j++)
-                    var curPath = GetBestPathFrom(b, o, i, j);
+                    var curPath = GetBestPathFrom(b, o, i, j, bso);
                     lock (pathLock)
                     {
                         if (curPath.Score > bestPath.Score)
@@ -45,7 +45,7 @@ namespace PadLogic.Solver
             return bestPath;
         }
 
-        private static Path GetBestPathFrom(Board b, Options o, int y, int x)
+        private static Path GetBestPathFrom(Board b, Options o, int y, int x, BoardScorer.Options bso)
         {
             Path bestPath = new Path();
             PriorityQueue<Tuple<Board, Path>, double> paths = new PriorityQueue<Tuple<Board, Path>, double>();
@@ -54,7 +54,7 @@ namespace PadLogic.Solver
                 Start = new Tuple<int, int>(y, x),
                 Current = new Tuple<int, int>(y, x),
                 Depth = 1,
-                Score = b.Score(BoardScorer.Options.Horus)
+                Score = b.Score(bso)
             }));
             int depth = 0;
             while (depth++ < o.MaxDepth)
@@ -94,7 +94,7 @@ namespace PadLogic.Solver
                         newBoard.Orbs[curPath.Current.Item1, curPath.Current.Item2] = tempOrb;
                         var newPath = new List<int[]>(curPath.Actions);
                         newPath.Add(direction);
-                        double score = newBoard.Score(BoardScorer.Options.Horus) - curPath.Depth / 100;
+                        double score = newBoard.Score(bso) - curPath.Depth / 100;
                         newPaths.Enqueue(new Tuple<Board, Path>(newBoard, new Path
                         {
                             Start = curPath.Start,

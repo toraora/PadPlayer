@@ -48,26 +48,33 @@ namespace PadLogic.Image
             int r = 0;
             int g = 0;
             int b = 0;
-            for (int i = -5; i <= 5; i++)
-                for (int j = -5; j <= 5; j++)
+            for (int i = -10; i <= 10; i++)
+                for (int j = -10; j <= 10; j++)
                 {
                     Color c = m_bmp.GetPixel(x_center + j, y_center + i);
                     r += c.R;
                     g += c.G;
                     b += c.B;
                 }
-            Color cur = Color.FromArgb(r / 121, g / 121, b / 121);
-            Orb ret = OrbsToColors.MinBy(s => ColorDiff(cur, s.Value)).Key;
+            Color cur = Color.FromArgb(r / 441, g / 441, b / 441);
+            Orb ret = OrbsToColors.MinBy(s => ColorDiff(cur, s.Item2)).Item1;
             return ret;
         }
 
-        private static Dictionary<Orb, Color> OrbsToColors = new Dictionary<Orb, Color> {
-            { Orb.Red, Color.FromArgb(254, 119, 77) },
-            { Orb.Blue, Color.FromArgb(64, 174, 238) },
-            { Orb.Green, Color.FromArgb(85, 238, 102) },
-            { Orb.Light, Color.FromArgb(255, 251, 132) },
-            { Orb.Dark, Color.FromArgb(170, 89, 178) },
-            { Orb.Heal, Color.FromArgb(220, 34, 127) }
+        private static List<Tuple<Orb, Color>> OrbsToColors = new List<Tuple<Orb, Color>> {
+            { new Tuple<Orb, Color> (Orb.Red, Color.FromArgb(254, 119, 77)) },
+            { new Tuple<Orb, Color> (Orb.Blue, Color.FromArgb(64, 174, 238)) },
+            { new Tuple<Orb, Color> (Orb.Green, Color.FromArgb(85, 238, 102)) },
+            { new Tuple<Orb, Color> (Orb.Light, Color.FromArgb(255, 251, 132)) },
+            { new Tuple<Orb, Color> (Orb.Dark, Color.FromArgb(170, 89, 178)) },
+            { new Tuple<Orb, Color> (Orb.Heal, Color.FromArgb(220, 34, 127)) },
+            { new Tuple<Orb, Color> (Orb.Red, Color.FromArgb(255, 188, 139)) },
+            { new Tuple<Orb, Color> (Orb.Blue, Color.FromArgb(125, 190, 226)) },
+            { new Tuple<Orb, Color> (Orb.Blue, Color.FromArgb(142, 229, 255)) },
+            { new Tuple<Orb, Color> (Orb.Green, Color.FromArgb(154, 255, 190)) },
+            { new Tuple<Orb, Color> (Orb.Dark, Color.FromArgb(187, 133, 226)) }
+
+            //{ new Tuple<Orb, Color> (Orb.Jammer, Color.FromArgb(65, 100 ,132)) }
         };
 
         private static double ColorDiff(Color a, Color b)
