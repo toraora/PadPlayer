@@ -19,8 +19,8 @@ namespace PadLogic.Solver
                 { Orb.Red, 3750 },
                 { Orb.Blue, 1814 },
                 { Orb.Green, 1715 },
-                { Orb.Light, 2191 },
-                { Orb.Dark, 2800 }
+                { Orb.Light, 3000 },
+                { Orb.Dark, 1000 }
             };
 
             public Dictionary<Orb, int> TpaPower = new Dictionary<Orb, int>
@@ -29,7 +29,7 @@ namespace PadLogic.Solver
                 { Orb.Blue, 900 },
                 { Orb.Green, 200 },
                 { Orb.Light, 2875 },
-                { Orb.Dark, 1250 }
+                { Orb.Dark, 225 }
             };
 
             public Dictionary<Orb, int> Rows = new Dictionary<Orb, int>

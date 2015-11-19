@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B81BBE4-AE7B-4932-88FD-D93F015F5E39}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PadLogic", "src\PadLogic\PadLogic.xproj", "{2736F7EE-B016-4714-A77D-3DD8B23F1753}"

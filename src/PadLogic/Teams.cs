@@ -14,19 +14,19 @@ namespace PadLogic
 
             Power = new Dictionary<Orb, int>
                 {
-                    { Orb.Red, 3750 },
-                    { Orb.Blue, 481 },
-                    { Orb.Green, 0 },
-                    { Orb.Light, 0 },
-                    { Orb.Dark, 9400 }
+                    { Orb.Red, 100 },
+                    { Orb.Blue, 100 },
+                    { Orb.Green, 100 },
+                    { Orb.Light, 100 },
+                    { Orb.Dark, 1000 }
                 },
 
             TpaPower = new Dictionary<Orb, int>
                 {
-                    { Orb.Red, 250 },
-                    { Orb.Blue, 0 },
-                    { Orb.Green, 0 },
-                    { Orb.Light, 0 },
+                    { Orb.Red, 100 },
+                    { Orb.Blue, 100 },
+                    { Orb.Green, 100 },
+                    { Orb.Light, 100 },
                     { Orb.Dark, 2400 }
                 },
 
@@ -50,9 +50,17 @@ namespace PadLogic
 
             factor = (c) =>
             {
-                if (c.Count > 5)
-                    return 1.2;
-                return 1;
+                double mult = 1.0;
+                var orbTypes = new HashSet<Orb>(c.Select(s => s.OrbType));
+                var orbTypeCount = orbTypes.Intersect(new List<Orb> { Orb.Red, Orb.Blue, Orb.Green, Orb.Light, Orb.Dark }).Count();
+                if (orbTypeCount == 5)
+                    mult = 5;
+
+                if (c.Count == 9) return mult * 4;
+                if (c.Count == 10) return mult * 6;
+                if (c.Count == 11) return mult * 8;
+                if (c.Count >= 12) return mult * 10;
+                return mult;
             }
         };
     }

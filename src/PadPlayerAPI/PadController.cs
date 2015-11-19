@@ -35,6 +35,7 @@ namespace PadPlayerAPI
             Bitmap bmp = new Bitmap(path);
             Board b = PadImage.BoardFromBitmap(rows, cols, height, width, h_off, w_off, bmp);
             return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b, BoardScorer.Options.Horus));
+            //return JsonConvert.SerializeObject(BeamDfs.GetBestPath(b, Teams.LuBu));
         }
 
         [Route("solveone ")]
